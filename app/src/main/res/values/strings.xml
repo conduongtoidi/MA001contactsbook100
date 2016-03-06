@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Danh bạ</string>
+    <string name="menu_search">Tìm kiếm</string>
+
+    <string name="contacts_list">Danh sách</string>
+    <string name="favorite_list">Yêu thích</string>
+    <string name="title_activity_maps">Bản đồ</string>
+    <string name="ok">Đồng ý</string>
+    <string name="cancel">Huỷ</string>
+    <string name="confirm">Xác nhận</string>
+    <string name="format_error_title">Sai định dạng</string>
+    <string name="format_error_message">Vui lòng kiểm tra dữ liệu nhập vào và thử lại</string>
+    <string name="general_error_title">Thông báo lỗi</string>
+    <string name="unexpected_error">Hiện tại không thể thực hiện thao tác này. \nVui lòng thử lại sau!</string>
+    <string name="loading">Đang xử lý</string>
+    <string name="general_error_message">Có lỗi xảy ra, vui lòng thử lại.</string>
+    <string name="profile">Trang cá nhân</string>
+    <string name="add_contact_success">Thêm địa chỉ liên lạc thành công.</string>
+
+</resources>

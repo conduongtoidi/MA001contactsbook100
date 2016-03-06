@@ -1,0 +1,2 @@
+include ':app', ':blur'
+project(':blur').projectDir = new File('libraries/blur')

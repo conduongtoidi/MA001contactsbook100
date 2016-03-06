@@ -1,0 +1,21 @@
+<resources>
+    <!--
+    TODO: Before you run your application, you need a Google Maps API key.
+
+    To get one, follow this link, follow the directions and press "Create" at the end:
+
+    https://console.developers.google.com/flows/enableapi?apiid=maps_android_backend&keyType=CLIENT_SIDE_ANDROID&r=1A:28:19:54:23:C4:AB:26:B1:B9:A4:F5:8F:9C:5A:C7:A2:24:60:72%3Bcom.whatsoft.contactbook.activity
+
+    You can also add your credentials to an existing key, using this line:
+    1A:28:19:54:23:C4:AB:26:B1:B9:A4:F5:8F:9C:5A:C7:A2:24:60:72;com.whatsoft.contactbook.activity
+
+    Alternatively, follow the directions here:
+    https://developers.google.com/maps/documentation/android/start#get-key
+
+    Once you have your key (it starts with "AIza"), replace the "google_maps_key"
+    string in this file.
+    -->
+    <string name="google_maps_key" templateMergeStrategy="preserve" translatable="false">
+        AIzaSyBNcyM68QcI_4ZuVSwVgR8jlilIjXTthp4
+    </string>
+</resources>
