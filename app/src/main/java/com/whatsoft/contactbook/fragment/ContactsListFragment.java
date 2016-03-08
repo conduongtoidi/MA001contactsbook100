@@ -200,7 +200,7 @@ public class ContactsListFragment extends BaseFragment implements ContactListVie
         super.onActivityResult(requestCode, resultCode, data);
         switch (requestCode) {
             case MainActivity.REQUEST_ADD_CONTACT:
-                if (listType == ListType.ALL) {
+                if (listType == ListType.ALL && data != null) {
                     Contact contact = (Contact) data.getSerializableExtra(ProfileActivity.EXTRA_CONTACT);
                     if (contact != null) {
                         contacts.add(0, contact);
