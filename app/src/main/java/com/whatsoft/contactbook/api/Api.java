@@ -1,17 +1,17 @@
 package com.whatsoft.contactbook.api;
 
-import com.squareup.okhttp.RequestBody;
 import com.whatsoft.contactbook.model.Contact;
 import com.whatsoft.contactbook.model.GGResponse;
 import com.whatsoft.contactbook.model.ResponseModel;
 
 import java.util.List;
 
-import retrofit.Call;
-import retrofit.http.Body;
-import retrofit.http.GET;
-import retrofit.http.POST;
-import retrofit.http.Query;
+import okhttp3.RequestBody;
+import retrofit2.Call;
+import retrofit2.http.Body;
+import retrofit2.http.GET;
+import retrofit2.http.POST;
+import retrofit2.http.Query;
 
 public interface Api {
     @GET("/api/v1/ucontact/")

@@ -1,12 +1,10 @@
 package com.whatsoft.contactbook.api;
 
-import com.squareup.okhttp.OkHttpClient;
-import com.whatsoft.contactbook.utils.ToStringConverterFactory;
+import com.whatsoft.contactbook.utils.stringconverter.StringConverterFactory;
 
-import java.util.concurrent.TimeUnit;
-
-import retrofit.GsonConverterFactory;
-import retrofit.Retrofit;
+import okhttp3.OkHttpClient;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
 
 public class ApiService {
     private static Retrofit retrofit;
@@ -15,12 +13,11 @@ public class ApiService {
     public synchronized static Api getApiInstance() {
         if (retrofit == null) {
             final OkHttpClient okHttpClient = new OkHttpClient();
-            okHttpClient.setReadTimeout(60, TimeUnit.SECONDS);
-            okHttpClient.setConnectTimeout(60, TimeUnit.SECONDS);
+//            okHttpClient.networkInterceptors().add(new StethoInterceptor());
             retrofit = new Retrofit.Builder()
                     .baseUrl(baseUrl)
                     .addConverterFactory(GsonConverterFactory.create())
-                    .addConverterFactory(new ToStringConverterFactory())
+                    .addConverterFactory(new StringConverterFactory())
                     .client(okHttpClient)
                     .build();
         }

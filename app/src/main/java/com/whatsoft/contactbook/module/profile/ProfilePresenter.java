@@ -1,8 +1,5 @@
 package com.whatsoft.contactbook.module.profile;
 
-import com.squareup.okhttp.MediaType;
-import com.squareup.okhttp.OkHttpClient;
-import com.squareup.okhttp.RequestBody;
 import com.whatsoft.contactbook.R;
 import com.whatsoft.contactbook.api.Api;
 import com.whatsoft.contactbook.api.ApiService;
@@ -13,15 +10,15 @@ import com.whatsoft.contactbook.model.GGResponse;
 import com.whatsoft.contactbook.model.ResponseModel;
 import com.whatsoft.contactbook.utils.DialogUtils;
 import com.whatsoft.contactbook.utils.Log;
-import com.whatsoft.contactbook.utils.ToStringConverterFactory;
 
-import java.util.concurrent.TimeUnit;
-
-import retrofit.Call;
-import retrofit.Callback;
-import retrofit.GsonConverterFactory;
-import retrofit.Response;
-import retrofit.Retrofit;
+import okhttp3.MediaType;
+import okhttp3.OkHttpClient;
+import okhttp3.RequestBody;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
 
 /**
  * Created by mb on 3/6/16
@@ -41,7 +38,7 @@ public class ProfilePresenter extends BasePresenter<ProfileView> implements IPro
         Call<ResponseModel<Contact>> call = ApiService.getApiInstance().addContacts(requestBody);
         call.enqueue(new Callback<ResponseModel<Contact>>() {
             @Override
-            public void onResponse(Response<ResponseModel<Contact>> response, Retrofit retrofit) {
+            public void onResponse(Call<ResponseModel<Contact>> call, Response<ResponseModel<Contact>> response) {
                 try {
                     ResponseModel<Contact> responseModel = response.body();
                     if (responseModel != null) {
@@ -57,7 +54,7 @@ public class ProfilePresenter extends BasePresenter<ProfileView> implements IPro
             }
 
             @Override
-            public void onFailure(Throwable t) {
+            public void onFailure(Call<ResponseModel<Contact>> call, Throwable t) {
                 Log.e(t);
                 DialogUtils.hideProgressDialog(activity);
                 getBaseView().onError(activity.getString(R.string.general_error_message));
@@ -69,19 +66,16 @@ public class ProfilePresenter extends BasePresenter<ProfileView> implements IPro
     public void getAddress(String latitude, String longitude) {
         DialogUtils.showProgressDialog(activity);
         final OkHttpClient okHttpClient = new OkHttpClient();
-        okHttpClient.setReadTimeout(60, TimeUnit.SECONDS);
-        okHttpClient.setConnectTimeout(60, TimeUnit.SECONDS);
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl("https://maps.googleapis.com")
                 .addConverterFactory(GsonConverterFactory.create())
-                .addConverterFactory(new ToStringConverterFactory())
                 .client(okHttpClient)
                 .build();
         String longlat = String.format("%s,%s", latitude, longitude);
         final Call<GGResponse> call = retrofit.create(Api.class).getAddressNoKey(longlat, "false");//"ROOFTOP", "street_address", activity.getString(R.string.google_maps_key
         call.enqueue(new Callback<GGResponse>() {
             @Override
-            public void onResponse(Response<GGResponse> response, Retrofit retrofit) {
+            public void onResponse(Call<GGResponse> call, Response<GGResponse> response) {
                 try {
                     GGResponse ggResponse = response.body();
                     if (ggResponse != null && ggResponse.getLocations() != null && ggResponse.getLocations().size() > 0) {
@@ -95,7 +89,7 @@ public class ProfilePresenter extends BasePresenter<ProfileView> implements IPro
             }
 
             @Override
-            public void onFailure(Throwable t) {
+            public void onFailure(Call<GGResponse> call, Throwable t) {
                 Log.e(t);
                 DialogUtils.hideProgressDialog(activity);
             }

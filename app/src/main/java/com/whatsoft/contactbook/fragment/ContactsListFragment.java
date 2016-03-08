@@ -16,10 +16,12 @@
 
 package com.whatsoft.contactbook.fragment;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -27,6 +29,7 @@ import android.widget.TextView;
 
 import com.whatsoft.contactbook.R;
 import com.whatsoft.contactbook.activity.MainActivity;
+import com.whatsoft.contactbook.activity.ProfileActivity;
 import com.whatsoft.contactbook.adapter.ContactListAdapter;
 import com.whatsoft.contactbook.base.BaseFragment;
 import com.whatsoft.contactbook.base.MyApplication;
@@ -88,11 +91,13 @@ public class ContactsListFragment extends BaseFragment implements ContactListVie
 
     private void setupRecyclerView(RecyclerView recyclerView) {
         recyclerView.setLayoutManager(new LinearLayoutManager(recyclerView.getContext()));
+        String type;
         if (listType == ListType.FAVORITE) {
-            refreshList((MyApplication.getInstance().getDatabaseHelper().getTableContact().filterBy(TableContact.KEY_IS_FAVORITE, "1")));
+            type = "1";
         } else {
-            refreshList(new ArrayList<Contact>());
+            type = "0";
         }
+        refreshList((MyApplication.getInstance().getDatabaseHelper().getTableContact().filterBy(TableContact.KEY_IS_FAVORITE, type)));
         recyclerView.setAdapter(contactListAdapter);
 
         ((MainActivity) getActivity()).btnAddContact.attachToRecyclerView(recyclerView);
@@ -101,15 +106,10 @@ public class ContactsListFragment extends BaseFragment implements ContactListVie
             endlessScrollListener = new EndlessScrollListener(recyclerView.getLayoutManager(), new EndlessScrollListener.Callback() {
                 @Override
                 public void onLoadMore() {
-//                    if (listType == ListType.ALL) {
-//                        contacts.addAll(getRandomSubList(contacts.size() + 20));
-//                        contactListAdapter.notifyDataSetChanged();
-//                    }
                 }
 
                 @Override
                 public void onScroll(int visibleItemCount, int pastVisibleItem) {
-
                 }
             });
             recyclerView.addOnScrollListener(endlessScrollListener);
@@ -133,7 +133,15 @@ public class ContactsListFragment extends BaseFragment implements ContactListVie
         if (listType == ListType.FAVORITE) {
             contactListAdapter.getFilter().filter(words);
         } else {
-            contactListPresenter.loadContactList(0, words);
+            if (TextUtils.isEmpty(words)) {
+                contacts.clear();
+                contacts.addAll(MyApplication.getInstance().getDatabaseHelper().getTableContact().filterBy(TableContact.KEY_IS_FAVORITE, "0"));
+                contactListAdapter.notifyDataSetChanged();
+            } else if (Utils.isNetworkAvailable(getActivity())) {
+                contactListPresenter.loadContactList(0, words);
+            } else {
+                contactListAdapter.getFilter().filter(words);
+            }
         }
     }
 
@@ -178,6 +186,28 @@ public class ContactsListFragment extends BaseFragment implements ContactListVie
             contacts.clear();
             contacts.addAll(MyApplication.getInstance().getDatabaseHelper().getTableContact().filterBy(TableContact.KEY_IS_FAVORITE, "1"));
             contactListAdapter.notifyDataSetChanged();
+        } else if (listType == ListType.ALL) {
+            if (getActivity() != null && !Utils.isNetworkAvailable(getActivity())) {
+                contacts.clear();
+                contacts.addAll(MyApplication.getInstance().getDatabaseHelper().getTableContact().filterBy(TableContact.KEY_IS_FAVORITE, "0"));
+                contactListAdapter.notifyDataSetChanged();
+            }
+        }
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        switch (requestCode) {
+            case MainActivity.REQUEST_ADD_CONTACT:
+                if (listType == ListType.ALL) {
+                    Contact contact = (Contact) data.getSerializableExtra(ProfileActivity.EXTRA_CONTACT);
+                    if (contact != null) {
+                        contacts.add(0, contact);
+                        contactListAdapter.notifyDataSetChanged();
+                    }
+                }
+                break;
         }
     }
 }

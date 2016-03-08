@@ -47,7 +47,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class MainActivity extends BaseActivity {
-
+    public static final int REQUEST_ADD_CONTACT = 10;
     private DrawerLayout mDrawerLayout;
     public FloatingActionButton btnAddContact;
     public android.support.v7.widget.SearchView searchView;
@@ -87,11 +87,9 @@ public class MainActivity extends BaseActivity {
         btnAddContact.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-//                Snackbar.make(view, "Add contact is coming soon!", Snackbar.LENGTH_LONG)
-//                        .setAction("Action", null).show();
                 Intent intent = new Intent(MainActivity.this, ProfileActivity.class);
                 intent.putExtra(ProfileActivity.EXTRA_TYPE, ProfileType.ADD);
-                startActivity(intent);
+                startActivityForResult(intent, REQUEST_ADD_CONTACT);
             }
         });
 
@@ -206,6 +204,14 @@ public class MainActivity extends BaseActivity {
         super.onResume();
         for (Fragment fragment : adapter.getmFragments()) {
             fragment.onResume();
+        }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        for (Fragment fragment : adapter.getmFragments()) {
+            fragment.onActivityResult(requestCode, resultCode, data);
         }
     }
 }

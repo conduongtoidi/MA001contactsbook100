@@ -57,7 +57,7 @@ public class TableContact extends BaseTable {
         }
 
         SQLiteDatabase db = mDatabaseHelper.getWritableDatabase();
-        db.insert(TABLE_NAME, null, changeToContent(row));
+        db.insertWithOnConflict(TABLE_NAME, null, changeToContent(row), SQLiteDatabase.CONFLICT_REPLACE);
         return true;
     }
 

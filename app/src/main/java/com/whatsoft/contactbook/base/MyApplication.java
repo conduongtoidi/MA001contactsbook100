@@ -2,6 +2,7 @@ package com.whatsoft.contactbook.base;
 
 import android.app.Application;
 
+import com.facebook.stetho.Stetho;
 import com.whatsoft.contactbook.database.DatabaseHelper;
 
 /**
@@ -14,6 +15,7 @@ public class MyApplication extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
+        Stetho.initializeWithDefaults(this);
         databaseHelper = new DatabaseHelper(this);
         instance = this;
     }

@@ -57,6 +57,8 @@ import com.whatsoft.contactbook.base.MyApplication;
 import com.whatsoft.contactbook.constant.Gender;
 import com.whatsoft.contactbook.constant.ProfileType;
 import com.whatsoft.contactbook.database.TableContact;
+import com.whatsoft.contactbook.fragment.common.ConfirmDialogFragment;
+import com.whatsoft.contactbook.fragment.common.RetainedDialogFragment;
 import com.whatsoft.contactbook.model.Contact;
 import com.whatsoft.contactbook.model.GGLocation;
 import com.whatsoft.contactbook.module.profile.ProfilePresenter;
@@ -167,6 +169,14 @@ public class ProfileActivity extends BaseActivity implements ProfileView, Locati
         loadBackdrop();
         setUpMap();
         Utils.setUpHideSoftKeyboard(this, findViewById(R.id.main_content));
+        if (contact != null) {
+            TableContact tableContact = MyApplication.getInstance().getDatabaseHelper().getTableContact();
+            Contact tmp = tableContact.getRowById(contact.getId());
+            if (tmp != null) {
+                contact.setFavorite(tmp.isFavorite());
+            }
+            tableContact.insertRow(contact);
+        }
     }
 
     private void setUpMap() {
@@ -281,11 +291,7 @@ public class ProfileActivity extends BaseActivity implements ProfileView, Locati
         contact.setFavorite(!contact.isFavorite());
         changeFavoriteStatus(contact.isFavorite());
         TableContact tableContact = MyApplication.getInstance().getDatabaseHelper().getTableContact();
-        if (tableContact.contains(contact.getId())) {
-            tableContact.updateRow(contact);
-        } else {
-            tableContact.insertRow(contact);
-        }
+        tableContact.insertRow(contact);
     }
 
     @OnClick(R.id.btn_direction)
@@ -302,19 +308,7 @@ public class ProfileActivity extends BaseActivity implements ProfileView, Locati
         if (!validate()) {
             return;
         }
-        Contact contact = new Contact();
-        contact.setName(edtName.getText().toString());
-        contact.setAddress(edtAddress.getText().toString());
-        contact.setRelationship(edtRelationship.getText().toString());
-        contact.setGender(gender);
-        contact.setDayOfBirth(edtDOB.getText().toString());
-        contact.setHomeNumber(edtHomeNo.getText().toString());
-        contact.setNation(edtNation.getText().toString());
-        if (mCurrentLocation != null) {
-            contact.setLatitude(String.valueOf(mCurrentLocation.getLatitude()));
-            contact.setLongitude(String.valueOf(mCurrentLocation.getLongitude()));
-        }
-        profilePresenter.addContact(contact);
+        profilePresenter.addContact(getContact());
     }
 
     @OnClick(R.id.edt_birthday)
@@ -345,6 +339,22 @@ public class ProfileActivity extends BaseActivity implements ProfileView, Locati
     @OnClick(R.id.tv_male)
     void onClickMale() {
         setGender(Gender.MALE);
+    }
+
+    private Contact getContact() {
+        Contact contact = new Contact();
+        contact.setName(edtName.getText().toString());
+        contact.setAddress(edtAddress.getText().toString());
+        contact.setRelationship(edtRelationship.getText().toString());
+        contact.setGender(gender);
+        contact.setDayOfBirth(edtDOB.getText().toString());
+        contact.setHomeNumber(edtHomeNo.getText().toString());
+        contact.setNation(edtNation.getText().toString());
+        if (mCurrentLocation != null) {
+            contact.setLatitude(String.valueOf(mCurrentLocation.getLatitude()));
+            contact.setLongitude(String.valueOf(mCurrentLocation.getLongitude()));
+        }
+        return contact;
     }
 
     private void setGender(Gender gender) {
@@ -427,8 +437,20 @@ public class ProfileActivity extends BaseActivity implements ProfileView, Locati
 
     @Override
     public void onAddContactSuccess(String message) {
-        DialogUtils.showConfirmDialog(this, getString(R.string.success), message, getString(R.string.ok), null);
-        finish();
+        DialogUtils.showConfirmDialog(this, getString(R.string.success), message, getString(R.string.ok), new ConfirmDialogFragment.OnConfirmListener() {
+            @Override
+            public void onConfirm(RetainedDialogFragment fragment) {
+                Contact contact = getContact();
+                MyApplication.getInstance().getDatabaseHelper().getTableContact().insertRow(contact);
+                Intent intent = getIntent();
+                if (intent == null) {
+                    intent = new Intent();
+                }
+                intent.putExtra(ProfileActivity.EXTRA_CONTACT, contact);
+                setResult(RESULT_OK, intent);
+                finish();
+            }
+        });
     }
 
     @Override

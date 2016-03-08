@@ -200,4 +200,23 @@ public class Contact extends BaseObject {
                 ", isFavorite=" + isFavorite +
                 '}';
     }
+
+    public Contact copy() {
+        Contact contact = new Contact();
+        contact.setGender(getGender().getValue());
+        contact.setLongitude(getLongitude());
+        contact.setLatitude(getLatitude());
+        contact.setRelationship(getRelationship());
+        contact.setAddressNo(getAddressNo());
+        contact.setAddress(getAddress());
+        contact.setCreateTime(getCreateTime());
+        contact.setDayOfBirth(getDayOfBirth());
+        contact.setFavorite(isFavorite());
+        contact.setHomeNumber(getHomeNumber());
+        contact.setId(getId());
+        contact.setUpdateTime(getUpdateTime());
+        contact.setName(getName());
+        contact.setNation(getNation());
+        return contact;
+    }
 }

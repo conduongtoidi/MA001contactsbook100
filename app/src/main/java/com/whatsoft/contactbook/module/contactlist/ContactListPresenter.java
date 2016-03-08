@@ -8,10 +8,9 @@ import com.whatsoft.contactbook.utils.Log;
 
 import java.util.List;
 
-import retrofit.Call;
-import retrofit.Callback;
-import retrofit.Response;
-import retrofit.Retrofit;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 /**
  * Created by mb on 3/6/16
@@ -22,7 +21,7 @@ public class ContactListPresenter extends BasePresenter<ContactListView> impleme
         Call<ResponseModel<List<Contact>>> call = ApiService.getApiInstance().getContacts(keyword);
         call.enqueue(new Callback<ResponseModel<List<Contact>>>() {
             @Override
-            public void onResponse(Response<ResponseModel<List<Contact>>> response, Retrofit retrofit) {
+            public void onResponse(Call<ResponseModel<List<Contact>>> call, Response<ResponseModel<List<Contact>>> response) {
                 try {
 //                    String content = response.body();
                     ResponseModel<List<Contact>> responseModel = response.body();
@@ -44,8 +43,8 @@ public class ContactListPresenter extends BasePresenter<ContactListView> impleme
             }
 
             @Override
-            public void onFailure(Throwable t) {
-                Log.e(t);
+            public void onFailure(Call<ResponseModel<List<Contact>>> call, Throwable t) {
+
             }
         });
     }
