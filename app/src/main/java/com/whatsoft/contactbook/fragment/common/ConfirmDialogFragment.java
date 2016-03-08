@@ -34,6 +34,15 @@ public class ConfirmDialogFragment extends RetainedDialogFragment {
         return frag;
     }
 
+    public static ConfirmDialogFragment instantiate(String title, String message,
+                                                    String lblOk, OnConfirmListener onConfirmListener) {
+        ConfirmDialogFragment frag = new ConfirmDialogFragment();
+        frag.message = message;
+        frag.title = title;
+        frag.lblOk = lblOk;
+        frag.setOnConfirmListener(onConfirmListener);
+        return frag;
+    }
 
 
     @Override
@@ -62,23 +71,25 @@ public class ConfirmDialogFragment extends RetainedDialogFragment {
         TextView tvOk = ((TextView) dialog.findViewById(R.id.btnOk));
         if (!TextUtils.isEmpty(lblOk)) {
             tvOk.setText(lblOk);
+        } else {
+            tvOk.setVisibility(View.GONE);
         }
         tvOk.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                dialog.dismiss();
                 if (onConfirmListener != null) {
                     onConfirmListener.onConfirm(ConfirmDialogFragment.this);
                 }
             }
         });
 
+        TextView tvCancel = ((TextView) dialog.findViewById(R.id.btnCancel));
         if (!TextUtils.isEmpty(lblCancel)) {
-            TextView tvCancel = ((TextView) dialog.findViewById(R.id.btnCancel));
             tvCancel.setText(lblCancel);
+        } else {
+            tvCancel.setVisibility(View.GONE);
         }
-
-
 
         dialog.findViewById(R.id.btnCancel).setOnClickListener(new View.OnClickListener() {
             @Override

@@ -150,7 +150,7 @@ public class TableContact extends BaseTable {
         return true;
     }
 
-    public boolean containts(String id) {
+    public boolean contains(String id) {
         String selectQuery = "SELECT  * FROM " + TABLE_NAME + " WHERE " + KEY_ID + " = ?";
 
         Log.i(selectQuery);

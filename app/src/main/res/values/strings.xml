@@ -9,6 +9,9 @@
     <string name="ok">Đồng ý</string>
     <string name="cancel">Huỷ</string>
     <string name="confirm">Xác nhận</string>
+    <string name="success">Thành công</string>
+    <string name="error">Lỗi</string>
+    <string name="failed">Thất bại</string>
     <string name="format_error_title">Sai định dạng</string>
     <string name="format_error_message">Vui lòng kiểm tra dữ liệu nhập vào và thử lại</string>
     <string name="general_error_title">Thông báo lỗi</string>

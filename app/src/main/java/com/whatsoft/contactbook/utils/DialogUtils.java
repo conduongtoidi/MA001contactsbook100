@@ -36,12 +36,12 @@ public class DialogUtils {
         return secondAnimationSet;
     }
 
-	public static void hideProgressDialog(final FragmentActivity activity) {
-		if (activity.isFinishing()) return;
-    	Fragment fragment = activity.getSupportFragmentManager().findFragmentByTag(DialogUtils.class.getName()+":progress");
-    	if (fragment != null && fragment instanceof ProgressDialogFragment) {
-            ((ProgressDialogFragment)fragment).dismiss();
-    	}
+    public static void hideProgressDialog(final FragmentActivity activity) {
+        if (activity.isFinishing()) return;
+        Fragment fragment = activity.getSupportFragmentManager().findFragmentByTag(DialogUtils.class.getName() + ":progress");
+        if (fragment != null && fragment instanceof ProgressDialogFragment) {
+            ((ProgressDialogFragment) fragment).dismiss();
+        }
 //        Utils.index = 0;
         getFirstAnimation().end();
         getSecondAnimation().end();
@@ -52,10 +52,10 @@ public class DialogUtils {
     }
 
     public static void showProgressDialog(final FragmentActivity activity, final String message) {
-		if (activity.isFinishing()) return;
+        if (activity.isFinishing()) return;
         Fragment fragment =
                 activity.getSupportFragmentManager().findFragmentByTag(DialogUtils.class.getName() + ":progress");
-        if(fragment == null) {
+        if (fragment == null) {
             ProgressDialogFragment
                     .instantiate(message, false, null)
                     .show(activity.getSupportFragmentManager(), DialogUtils.class.getName() + ":progress");
@@ -64,17 +64,17 @@ public class DialogUtils {
 
     public static void showProgressDialog(final FragmentActivity activity, final String message,
                                           final RetainedDialogFragment.OnCancelListener onCancelListener) {
-		if (activity.isFinishing()) return;
-		ProgressDialogFragment
-		.instantiate(message, true, onCancelListener)
-		.show(activity.getSupportFragmentManager(), DialogUtils.class.getName() + ":progress");
+        if (activity.isFinishing()) return;
+        ProgressDialogFragment
+                .instantiate(message, true, onCancelListener)
+                .show(activity.getSupportFragmentManager(), DialogUtils.class.getName() + ":progress");
     }
 
     public static void showGeneralErrorAlert(final FragmentActivity activity) {
-		if (activity.isFinishing()) return;
-		AlertDialogFragment
-		.instantiate(activity.getString(R.string.general_error_title), activity.getString(R.string.general_error_message), AlertDialogFragment.Type.ERROR, null)
-		.show(activity.getSupportFragmentManager(), DialogUtils.class.getName() + ":alert");
+        if (activity.isFinishing()) return;
+        AlertDialogFragment
+                .instantiate(activity.getString(R.string.general_error_title), activity.getString(R.string.general_error_message), AlertDialogFragment.Type.ERROR, null)
+                .show(activity.getSupportFragmentManager(), DialogUtils.class.getName() + ":alert");
     }
 
     public static void showGeneralErrorAlert(final FragmentActivity activity, String message) {
@@ -96,14 +96,14 @@ public class DialogUtils {
         if (activity.isFinishing()) return;
         AlertDialogFragment
                 .instantiate(title, message, AlertDialogFragment.Type.WARNING, onDismissListener)
-                .show(activity.getSupportFragmentManager(), DialogUtils.class.getName()+":alert");
+                .show(activity.getSupportFragmentManager(), DialogUtils.class.getName() + ":alert");
     }
 
     public static void showValidateFormatErrorAlert(final FragmentActivity activity) {
-		if (activity == null || (activity.isFinishing())) return;
-		AlertDialogFragment
-		.instantiate(activity.getString(R.string.format_error_title), activity.getString(R.string.format_error_message), AlertDialogFragment.Type.ERROR, null)
-		.show(activity.getSupportFragmentManager(), DialogUtils.class.getName() + ":alert");
+        if (activity == null || (activity.isFinishing())) return;
+        AlertDialogFragment
+                .instantiate(activity.getString(R.string.format_error_title), activity.getString(R.string.format_error_message), AlertDialogFragment.Type.ERROR, null)
+                .show(activity.getSupportFragmentManager(), DialogUtils.class.getName() + ":alert");
     }
 
     public static void showUnexpectedErrorAlert(final FragmentActivity activity) {
@@ -113,13 +113,21 @@ public class DialogUtils {
                 .show(activity.getSupportFragmentManager(), DialogUtils.class.getName() + ":alert");
     }
 
-    public static void showConfirmDialog(final FragmentActivity activity, String title, String message,
-                                         String lblOk, String lblCancel,
-                                         ConfirmDialogFragment.OnConfirmListener confirmListener,
-                                         RetainedDialogFragment.OnCancelListener cancelListener) {
+    public static void showYesNoDialog(final FragmentActivity activity, String title, String message,
+                                       String lblOk, String lblCancel,
+                                       ConfirmDialogFragment.OnConfirmListener confirmListener,
+                                       RetainedDialogFragment.OnCancelListener cancelListener) {
         if (activity.isFinishing()) return;
         ConfirmDialogFragment
                 .instantiate(title, message, lblOk, lblCancel, confirmListener, cancelListener)
+                .show(activity.getSupportFragmentManager(), DialogUtils.class.getName() + ":yes_no");
+    }
+
+    public static void showConfirmDialog(final FragmentActivity activity, String title, String message,
+                                         String lblOk, ConfirmDialogFragment.OnConfirmListener confirmListener) {
+        if (activity.isFinishing()) return;
+        ConfirmDialogFragment
+                .instantiate(title, message, lblOk, confirmListener)
                 .show(activity.getSupportFragmentManager(), DialogUtils.class.getName() + ":confirm");
     }
 }

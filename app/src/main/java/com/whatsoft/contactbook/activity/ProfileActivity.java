@@ -61,6 +61,7 @@ import com.whatsoft.contactbook.model.Contact;
 import com.whatsoft.contactbook.model.GGLocation;
 import com.whatsoft.contactbook.module.profile.ProfilePresenter;
 import com.whatsoft.contactbook.module.profile.ProfileView;
+import com.whatsoft.contactbook.utils.DialogUtils;
 import com.whatsoft.contactbook.utils.Utils;
 
 import java.util.ArrayList;
@@ -201,6 +202,7 @@ public class ProfileActivity extends BaseActivity implements ProfileView, Locati
                 edtDOB.setFocusableInTouchMode(false);
                 edtDOB.setFocusable(false);
                 edtDOB.setClickable(true);
+                edtDOB.setLongClickable(false);
                 break;
             case VIEW:
                 btnAddContact.setVisibility(View.GONE);
@@ -279,7 +281,7 @@ public class ProfileActivity extends BaseActivity implements ProfileView, Locati
         contact.setFavorite(!contact.isFavorite());
         changeFavoriteStatus(contact.isFavorite());
         TableContact tableContact = MyApplication.getInstance().getDatabaseHelper().getTableContact();
-        if (tableContact.containts(contact.getId())) {
+        if (tableContact.contains(contact.getId())) {
             tableContact.updateRow(contact);
         } else {
             tableContact.insertRow(contact);
@@ -297,6 +299,9 @@ public class ProfileActivity extends BaseActivity implements ProfileView, Locati
 
     @OnClick(R.id.btn_add_contact)
     void onClickAddContact() {
+        if (!validate()) {
+            return;
+        }
         Contact contact = new Contact();
         contact.setName(edtName.getText().toString());
         contact.setAddress(edtAddress.getText().toString());
@@ -319,6 +324,7 @@ public class ProfileActivity extends BaseActivity implements ProfileView, Locati
         DatePickerDialog datePickerDialog = new DatePickerDialog(this, new DatePickerDialog.OnDateSetListener() {
             @Override
             public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
+                edtDOB.setError(null);
                 edtDOB.setText(String.format(Locale.ENGLISH, "%d/%d/%d", dayOfMonth, monthOfYear, year));
             }
         }, calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH));
@@ -372,6 +378,30 @@ public class ProfileActivity extends BaseActivity implements ProfileView, Locati
         Glide.with(this).load(R.drawable.cheese_4).centerCrop().into(imageView);
     }
 
+    private boolean validate() {
+        boolean isOk = true;
+        if (TextUtils.isEmpty(edtName.getText().toString())) {
+            edtName.setError("Vùi lòng nhập tên");
+            isOk = false;
+        }
+
+        if (TextUtils.isEmpty(edtAddress.getText().toString())) {
+            edtAddress.setError("Vui lòng nhập địa chỉ");
+            isOk = false;
+        }
+
+        if (TextUtils.isEmpty(edtDOB.getText().toString())) {
+            edtDOB.setError("Vui lòng chọn ngày sinh.");
+            isOk = false;
+        }
+
+        if (TextUtils.isEmpty(edtNation.getText().toString())) {
+            edtNation.setError("Vui lòng nhập dân tộc");
+            isOk = false;
+        }
+        return isOk;
+    }
+
     @Override
     protected void onDestroy() {
         ButterKnife.unbind(this);
@@ -397,13 +427,13 @@ public class ProfileActivity extends BaseActivity implements ProfileView, Locati
 
     @Override
     public void onAddContactSuccess(String message) {
-        Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
+        DialogUtils.showConfirmDialog(this, getString(R.string.success), message, getString(R.string.ok), null);
         finish();
     }
 
     @Override
     public void onError(String message) {
-        Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
+        DialogUtils.showConfirmDialog(this, getString(R.string.failed), message, getString(R.string.ok), null);
     }
 
     @Override
