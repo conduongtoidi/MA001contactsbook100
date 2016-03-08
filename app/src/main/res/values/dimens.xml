@@ -4,4 +4,26 @@
     <dimen name="card_margin">7dp</dimen>
     <dimen name="fab_margin">16dp</dimen>
     <dimen name="list_item_avatar_size">40dp</dimen>
+
+    <dimen name="default_padding_very_tiny">2dp</dimen>
+    <dimen name="default_padding_tiny">4dp</dimen>
+    <dimen name="default_padding_smaller">6dp</dimen>
+    <dimen name="default_padding_small">8dp</dimen>
+    <dimen name="default_padding">10dp</dimen>
+    <dimen name="default_padding_big">12dp</dimen>
+    <dimen name="default_padding_bigger">16dp</dimen>
+    <dimen name="default_padding_large">20dp</dimen>
+    <dimen name="default_padding_xlarge">24dp</dimen>
+    <dimen name="default_padding_x_xlarge">32dp</dimen>
+    <dimen name="default_padding_xxxlarge">45dp</dimen>
+
+    <dimen name="default_text_tiny">10sp</dimen>
+    <dimen name="default_text_smaller">11sp</dimen>
+    <dimen name="default_text_small">12sp</dimen>
+    <dimen name="default_text_size">14sp</dimen>
+    <dimen name="default_text_size_big">16sp</dimen>
+    <dimen name="default_text_size_bigger">18sp</dimen>
+    <dimen name="default_text_size_large">20sp</dimen>
+    <dimen name="default_text_size_xlarge">22sp</dimen>
+
 </resources>

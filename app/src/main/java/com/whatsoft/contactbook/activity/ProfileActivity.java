@@ -17,6 +17,8 @@
 package com.whatsoft.contactbook.activity;
 
 import android.Manifest;
+import android.app.DatePickerDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
@@ -27,15 +29,20 @@ import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
@@ -47,6 +54,7 @@ import com.google.android.gms.location.LocationServices;
 import com.whatsoft.contactbook.R;
 import com.whatsoft.contactbook.base.BaseActivity;
 import com.whatsoft.contactbook.base.MyApplication;
+import com.whatsoft.contactbook.constant.Gender;
 import com.whatsoft.contactbook.constant.ProfileType;
 import com.whatsoft.contactbook.database.TableContact;
 import com.whatsoft.contactbook.model.Contact;
@@ -54,6 +62,11 @@ import com.whatsoft.contactbook.model.GGLocation;
 import com.whatsoft.contactbook.module.profile.ProfilePresenter;
 import com.whatsoft.contactbook.module.profile.ProfileView;
 import com.whatsoft.contactbook.utils.Utils;
+
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.List;
+import java.util.Locale;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -73,8 +86,11 @@ public class ProfileActivity extends BaseActivity implements ProfileView, Locati
     @Bind(R.id.edt_address)
     EditText edtAddress;
 
-    @Bind(R.id.edt_gender)
-    EditText edtGender;
+    @Bind(R.id.tv_male)
+    TextView tvMale;
+
+    @Bind(R.id.tv_female)
+    TextView tvFemale;
 
     @Bind(R.id.edt_birthday)
     EditText edtDOB;
@@ -103,6 +119,9 @@ public class ProfileActivity extends BaseActivity implements ProfileView, Locati
     @Bind(R.id.btn_add_contact)
     Button btnAddContact;
 
+    @Bind(R.id.spn_relationship)
+    Spinner spnRelationship;
+
     private Contact contact;
     private ProfileType profileType = ProfileType.VIEW;
     private ProfilePresenter profilePresenter;
@@ -110,6 +129,8 @@ public class ProfileActivity extends BaseActivity implements ProfileView, Locati
     private LocationRequest mLocationRequest;
     private Location mCurrentLocation;
     private boolean hasPermission = true;
+    private String birthday;
+    private String gender;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -130,6 +151,16 @@ public class ProfileActivity extends BaseActivity implements ProfileView, Locati
         if (getSupportActionBar() != null) {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         }
+        List<String> relationship = new ArrayList<>();
+        relationship.add("Chủ hộ");
+        relationship.add("Vợ/chồng chủ hộ");
+        relationship.add("Con đẻ");
+        relationship.add("Cháu");
+        relationship.add("Con nuôi/con dâu/con rể");
+        relationship.add("Bố mẹ");
+        relationship.add("Có quan hệ khác");
+        ArrayAdapter<String> relationshipAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, relationship);
+        spnRelationship.setAdapter(relationshipAdapter);
         fillData(contact);
         switchState(profileType);
         loadBackdrop();
@@ -163,9 +194,19 @@ public class ProfileActivity extends BaseActivity implements ProfileView, Locati
                 appBarLayout.setExpanded(false);
                 appBarLayout.setEnabled(false);
                 collapsingToolbar.setTitle("Thêm liên lạc");
+                edtNation.setText("Kinh");
+                tvMale.performClick();
+                edtRelationship.setVisibility(View.GONE);
+                spnRelationship.setVisibility(View.VISIBLE);
+                edtDOB.setFocusableInTouchMode(false);
+                edtDOB.setFocusable(false);
+                edtDOB.setClickable(true);
                 break;
             case VIEW:
                 btnAddContact.setVisibility(View.GONE);
+                edtRelationship.setVisibility(View.VISIBLE);
+                spnRelationship.setVisibility(View.GONE);
+                setEditable(false);
                 break;
         }
     }
@@ -216,7 +257,8 @@ public class ProfileActivity extends BaseActivity implements ProfileView, Locati
             edtHomeNo.setText(contact.getHomeNumber());
         }
 
-        edtGender.setText(contact.getGender().getValue());
+        setGender(contact.getGender());
+
         if (!TextUtils.isEmpty(contact.getRelationship())) {
             edtRelationship.setText(contact.getRelationship());
         }
@@ -259,7 +301,7 @@ public class ProfileActivity extends BaseActivity implements ProfileView, Locati
         contact.setName(edtName.getText().toString());
         contact.setAddress(edtAddress.getText().toString());
         contact.setRelationship(edtRelationship.getText().toString());
-        contact.setGender(edtGender.getText().toString());
+        contact.setGender(gender);
         contact.setDayOfBirth(edtDOB.getText().toString());
         contact.setHomeNumber(edtHomeNo.getText().toString());
         contact.setNation(edtNation.getText().toString());
@@ -268,6 +310,53 @@ public class ProfileActivity extends BaseActivity implements ProfileView, Locati
             contact.setLongitude(String.valueOf(mCurrentLocation.getLongitude()));
         }
         profilePresenter.addContact(contact);
+    }
+
+    @OnClick(R.id.edt_birthday)
+    void onClickBirthday() {
+        birthday = edtDOB.getText().toString();
+        Calendar calendar = Calendar.getInstance();
+        DatePickerDialog datePickerDialog = new DatePickerDialog(this, new DatePickerDialog.OnDateSetListener() {
+            @Override
+            public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
+                edtDOB.setText(String.format(Locale.ENGLISH, "%d/%d/%d", dayOfMonth, monthOfYear, year));
+            }
+        }, calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH));
+        datePickerDialog.setOnCancelListener(new DialogInterface.OnCancelListener() {
+            @Override
+            public void onCancel(DialogInterface dialog) {
+                edtDOB.setText(birthday);
+            }
+        });
+        datePickerDialog.show();
+    }
+
+    @OnClick(R.id.tv_female)
+    void onClickFemale() {
+        setGender(Gender.FEMALE);
+    }
+
+    @OnClick(R.id.tv_male)
+    void onClickMale() {
+        setGender(Gender.MALE);
+    }
+
+    private void setGender(Gender gender) {
+        this.gender = gender.getValue();
+        switch (gender) {
+            case MALE:
+                tvMale.setBackgroundColor(ContextCompat.getColor(this, R.color.color_blue_light));
+                tvMale.setTextColor(ContextCompat.getColor(this, android.R.color.white));
+                tvFemale.setBackgroundColor(ContextCompat.getColor(this, R.color.transparent_status_bar_color));
+                tvFemale.setTextColor(ContextCompat.getColor(this, R.color.text_color_light));
+                break;
+            case FEMALE:
+                tvFemale.setBackgroundColor(ContextCompat.getColor(this, R.color.color_blue_light));
+                tvFemale.setTextColor(ContextCompat.getColor(this, android.R.color.white));
+                tvMale.setBackgroundColor(ContextCompat.getColor(this, R.color.transparent_status_bar_color));
+                tvMale.setTextColor(ContextCompat.getColor(this, R.color.text_color_light));
+                break;
+        }
     }
 
     private void changeFavoriteStatus(boolean isFavorite) {
@@ -300,7 +389,8 @@ public class ProfileActivity extends BaseActivity implements ProfileView, Locati
         edtName.setEnabled(editable);
         edtDOB.setEnabled(editable);
         edtRelationship.setEnabled(editable);
-        edtGender.setEnabled(editable);
+        tvMale.setEnabled(editable);
+        tvFemale.setEnabled(editable);
         edtHomeNo.setEnabled(editable);
         edtNation.setEnabled(editable);
     }

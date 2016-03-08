@@ -6,4 +6,5 @@
     <color name="color_accent">#FF4081</color>
     <color name="transparent_status_bar_color">#14000000</color>
     <color name="text_color_light">#CC000000</color>
+    <color name="color_blue_light">#0a4776</color>
 </resources>

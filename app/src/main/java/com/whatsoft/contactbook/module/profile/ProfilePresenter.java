@@ -36,6 +36,7 @@ public class ProfilePresenter extends BasePresenter<ProfileView> implements IPro
     @Override
     public void addContact(Contact contact) {
         DialogUtils.showProgressDialog(activity);
+        Log.d(contact.toJsonString());
         RequestBody requestBody = RequestBody.create(MediaType.parse("application/json"), contact.toJsonString());
         Call<ResponseModel<Contact>> call = ApiService.getApiInstance().addContacts(requestBody);
         call.enqueue(new Callback<ResponseModel<Contact>>() {

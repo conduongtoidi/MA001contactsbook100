@@ -88,6 +88,7 @@
                             android:layout_height="wrap_content"
                             android:layout_weight="7.5"
                             android:enabled="false"
+                            android:singleLine="true"
                             android:textAppearance="?textAppearanceListItem" />
 
                     </LinearLayout>
@@ -116,6 +117,7 @@
                             android:layout_weight="7.5"
                             android:clickable="true"
                             android:enabled="false"
+                            android:singleLine="true"
                             android:textAppearance="?textAppearanceListItem" />
 
                     </LinearLayout>
@@ -126,6 +128,7 @@
                         android:layout_height="wrap_content"
                         android:gravity="center_vertical"
                         android:orientation="horizontal"
+                        android:visibility="gone"
                         android:weightSum="10">
 
                         <TextView
@@ -163,14 +166,27 @@
                             android:textAppearance="?textAppearanceListItem"
                             android:textColor="@android:color/black" />
 
-                        <EditText
-                            android:id="@+id/edt_gender"
-                            style="@style/TextColorLight"
+                        <TextView
+                            android:id="@+id/tv_male"
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
-                            android:layout_weight="7.5"
-                            android:enabled="false"
-                            android:textAppearance="?textAppearanceListItem" />
+                            android:layout_weight="1.8"
+                            android:background="@drawable/bg_text_button_selector"
+                            android:gravity="center"
+                            android:padding="@dimen/default_padding_small"
+                            android:text="Nam"
+                            android:textColor="@color/color_text_button_selector" />
+
+                        <TextView
+                            android:id="@+id/tv_female"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1.8"
+                            android:background="@drawable/bg_text_button_selector"
+                            android:gravity="center"
+                            android:padding="@dimen/default_padding_small"
+                            android:text="Nữ"
+                            android:textColor="@color/color_text_button_selector" />
 
                     </LinearLayout>
 
@@ -197,6 +213,8 @@
                             android:layout_height="wrap_content"
                             android:layout_weight="7.5"
                             android:enabled="false"
+                            android:inputType="none"
+                            android:singleLine="true"
                             android:textAppearance="?textAppearanceListItem" />
 
                     </LinearLayout>
@@ -217,15 +235,24 @@
                             android:textAppearance="?textAppearanceListItem"
                             android:textColor="@android:color/black" />
 
-                        <EditText
-                            android:id="@+id/edt_relationship"
-                            style="@style/TextColorLight"
+                        <FrameLayout
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
-                            android:layout_weight="7.5"
-                            android:enabled="false"
-                            android:textAppearance="?textAppearanceListItem" />
+                            android:layout_weight="7.5">
 
+                            <EditText
+                                android:id="@+id/edt_relationship"
+                                style="@style/TextColorLight"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:enabled="false"
+                                android:textAppearance="?textAppearanceListItem" />
+
+                            <Spinner
+                                android:id="@+id/spn_relationship"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content" />
+                        </FrameLayout>
                     </LinearLayout>
 
                     <LinearLayout
@@ -251,6 +278,7 @@
                             android:layout_height="wrap_content"
                             android:layout_weight="7.5"
                             android:enabled="false"
+                            android:singleLine="true"
                             android:textAppearance="?textAppearanceListItem" />
 
                     </LinearLayout>
@@ -268,7 +296,8 @@
                 android:background="@color/color_primary"
                 android:padding="10dp"
                 android:text="Thêm"
-                android:textColor="@android:color/white" />
+                android:textColor="@android:color/white"
+                android:textSize="18sp" />
         </LinearLayout>
 
     </android.support.v4.widget.NestedScrollView>
